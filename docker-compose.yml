@@ -2,7 +2,7 @@ services:
 
   db:
     image: postgres:15.0
-    container_name: db
+    container_name: db_odoo
     restart: unless-stopped
     environment:
       - POSTGRES_DB=${ODOO_USER:-odoo}
