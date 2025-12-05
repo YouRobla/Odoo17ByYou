@@ -1,11 +1,31 @@
 services:
 
+  db:
+    image: postgres:15.0
+    container_name: db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${ODOO_USER:-odoo}
+      - POSTGRES_PASSWORD=${ODOO_PASSWORD:-odoo}
+      - POSTGRES_USER=${ODOO_USER:-odoo}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - odoo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ODOO_USER:-odoo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   odoo:
     image: odoo:17.0
     container_name: odoo
     restart: unless-stopped
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8090:8069"
     volumes:
@@ -13,22 +33,15 @@ services:
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
     environment:
-      - HOST=${ODOO_HOST}
-      - USER=${ODOO_USER}
-      - PASSWORD=${ODOO_PASSWORD}
-    command: odoo -d ${ODOO_USER} --db_user=${ODOO_USER} --db_password=${ODOO_PASSWORD} -i base
+      - HOST=${ODOO_HOST:-db}
+      - USER=${ODOO_USER:-odoo}
+      - PASSWORD=${ODOO_PASSWORD:-odoo}
+    networks:
+      - odoo-network
 
-  db:
-    image: postgres:15.0
-    container_name: db
-    restart: unless-stopped
-    environment:
-      - POSTGRES_DB=${ODOO_USER}
-      - POSTGRES_PASSWORD=${ODOO_PASSWORD}
-      - POSTGRES_USER=${ODOO_USER}
-      - PGDATA=/var/lib/postgresql/data/pgdata
-    volumes:
-      - db-data:/var/lib/postgresql/data
+networks:
+  odoo-network:
+    driver: bridge
 
 volumes:
   odoo-data:

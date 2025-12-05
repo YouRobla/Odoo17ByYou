@@ -1,0 +1,21 @@
+# Environment variables
+.env
+
+# Odoo data
+odoo-data/
+db-data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
