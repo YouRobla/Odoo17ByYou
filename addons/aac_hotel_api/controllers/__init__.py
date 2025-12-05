@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from . import cors_handler
 from . import api_controller
 from . import api_auth
 from . import advance_payment
