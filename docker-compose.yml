@@ -14,7 +14,7 @@ services:
     networks:
       - odoo-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${ODOO_USER:-odoo}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${ODOO_USER:-odoo}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -32,11 +32,7 @@ services:
       - odoo-data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
-    environment:
-      - HOST=${ODOO_HOST:-db}
-      - USER=${ODOO_USER:-odoo}
-      - PASSWORD=${ODOO_PASSWORD:-odoo}
-    command: ["odoo", "--config=/etc/odoo/odoo.conf"]
+    command: [ "odoo", "--config=/etc/odoo/odoo.conf" ]
     networks:
       - odoo-network
 
