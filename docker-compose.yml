@@ -1,13 +1,11 @@
 services:
 
   odoo:
-    image: odoo:18
+    image: odoo:17.0
     container_name: odoo
-    restart: unless-stopped 
+    restart: unless-stopped
     depends_on:
       - db
-    ports:
-      - "8201:8069"
     volumes:
       - odoo-data:/var/lib/odoo
       - ./config:/etc/odoo
@@ -16,14 +14,12 @@ services:
       - HOST=${ODOO_HOST}
       - USER=${ODOO_USER}
       - PASSWORD=${ODOO_PASSWORD}
-    networks:
-      - general-net
-    command: odoo -d ${ODOO_USER} --db_user=${ODOO_USER} --db_password=${ODOO_PASSWORD} -i base      
+    command: odoo -d ${ODOO_USER} --db_user=${ODOO_USER} --db_password=${ODOO_PASSWORD} -i base
 
   db:
-    image: postgres:16.0
+    image: postgres:15.0
     container_name: db
-    restart: unless-stopped       
+    restart: unless-stopped
     environment:
       - POSTGRES_DB=${ODOO_USER}
       - POSTGRES_PASSWORD=${ODOO_PASSWORD}
@@ -31,13 +27,9 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - db-data:/var/lib/postgresql/data
-    networks:
-      - general-net
 
 volumes:
   odoo-data:
-  db-data:    
+  db-data:
 
-networks:
-  general-net:
-    external: true  # Usa la red ya creada
+
