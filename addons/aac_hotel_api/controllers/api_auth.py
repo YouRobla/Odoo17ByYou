@@ -5,7 +5,6 @@ from functools import wraps
 from odoo import http
 from odoo.http import request, Response
 from odoo.tools import json_default
-from .cors_handler import cors_enabled, add_cors_headers
 
 _logger = logging.getLogger(__name__)
 
@@ -50,7 +49,7 @@ def validate_api_key(func):
             _logger.warning(
                 "Intento de acceso sin API key a endpoint: %s", func.__name__
             )
-            response = Response(
+            return Response(
                 json.dumps(
                     {
                         "success": False,
@@ -62,7 +61,6 @@ def validate_api_key(func):
                 content_type="application/json",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-            return add_cors_headers(response)
 
         # Usar el sistema nativo de autenticación de Odoo 17
         # Las API keys nativas se generan desde: Preferencias → Seguridad de la cuenta → Claves API
@@ -90,7 +88,7 @@ def validate_api_key(func):
                 func.__name__,
                 getattr(request.httprequest, "remote_addr", "unknown"),
             )
-            response = Response(
+            return Response(
                 json.dumps(
                     {
                         "success": False,
@@ -102,12 +100,11 @@ def validate_api_key(func):
                 content_type="application/json",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-            return add_cors_headers(response)
 
         # Establecer el usuario en el entorno
         user = request.env["res.users"].sudo().browse(uid)
         if not user.exists():
-            response = Response(
+            return Response(
                 json.dumps(
                     {
                         "success": False,
@@ -119,7 +116,6 @@ def validate_api_key(func):
                 content_type="application/json",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-            return add_cors_headers(response)
 
         # Actualizar el entorno completo con el usuario autenticado
         request.update_env(user=uid)
@@ -151,10 +147,9 @@ class ApiKeyController(http.Controller):
         "/api/auth/generate_key",
         auth="public",
         type="http",
-        methods=["POST", "OPTIONS"],
+        methods=["POST"],
         csrf=False,
     )
-    @cors_enabled
     def generate_api_key(self, **kw):
         """
         Generar una nueva API key nativa de Odoo para el usuario autenticado.
@@ -225,9 +220,8 @@ class ApiKeyController(http.Controller):
             )
 
     @http.route(
-        "/api/auth/my_keys", auth="public", type="http", methods=["GET", "OPTIONS"], csrf=False
+        "/api/auth/my_keys", auth="public", type="http", methods=["GET"], csrf=False
     )
-    @cors_enabled
     def get_my_api_keys(self, **_kw):
         """
         Obtener lista de API keys nativas del usuario autenticado (sin mostrar las keys).
@@ -261,10 +255,9 @@ class ApiKeyController(http.Controller):
         "/api/auth/revoke_key/<int:key_id>",
         auth="public",
         type="http",
-        methods=["POST", "DELETE", "OPTIONS"],
+        methods=["POST", "DELETE"],
         csrf=False,
     )
-    @cors_enabled
     def revoke_api_key(self, key_id, **_kw):
         """
         Revocar (eliminar) una API key nativa del usuario autenticado.
@@ -306,9 +299,8 @@ class ApiKeyController(http.Controller):
         )
 
     @http.route(
-        "/api/auth/validate", auth="public", type="http", methods=["POST", "OPTIONS"], csrf=False
+        "/api/auth/validate", auth="public", type="http", methods=["POST"], csrf=False
     )
-    @cors_enabled
     def validate_api_key_public(self, **kw):
         """
         Endpoint PÚBLICO para validar una API key desde el frontend.
@@ -388,10 +380,9 @@ class ApiKeyController(http.Controller):
         "/api/auth/test_key",
         auth="public",
         type="http",
-        methods=["GET", "POST", "OPTIONS"],
+        methods=["GET", "POST"],
         csrf=False,
     )
-    @cors_enabled
     def test_api_key(self, **kw):
         """
         Probar una API key nativa (validar sin crear).

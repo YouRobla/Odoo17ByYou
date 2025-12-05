@@ -5,7 +5,6 @@ from odoo.http import request, Response
 from odoo.tools import json_default
 from odoo.exceptions import AccessError, ValidationError
 from .api_auth import validate_api_key
-from .cors_handler import cors_enabled
 
 _logger = logging.getLogger(__name__)
 
@@ -40,8 +39,7 @@ class ListaHotelesController(http.Controller):
             content_type='application/json',
         )
 
-    @http.route('/api/hotel/hoteles', auth='public', type='http', methods=['GET', 'OPTIONS'], csrf=False)
-    @cors_enabled
+    @http.route('/api/hotel/hoteles', auth='public', type='http', methods=['GET'], csrf=False)
     @validate_api_key
     def get_hoteles(self, **kw):
         """
@@ -86,8 +84,7 @@ class ListaHotelesController(http.Controller):
                 'error': 'Error interno del servidor'
             }, status=500)
 
-    @http.route('/api/hotel/hoteles/<int:hotel_id>', auth='public', type='http', methods=['GET', 'OPTIONS'], csrf=False)
-    @cors_enabled
+    @http.route('/api/hotel/hoteles/<int:hotel_id>', auth='public', type='http', methods=['GET'], csrf=False)
     @validate_api_key
     def get_hotel_by_id(self, hotel_id, **kw):
         """
@@ -169,8 +166,7 @@ class ListaHotelesController(http.Controller):
                 'error': 'Error interno del servidor'
             }, status=500)
 
-    @http.route('/api/hotel/hoteles/search', auth='public', type='http', methods=['GET', 'OPTIONS'], csrf=False)
-    @cors_enabled
+    @http.route('/api/hotel/hoteles/search', auth='public', type='http', methods=['GET'], csrf=False)
     @validate_api_key
     def search_hoteles(self, **kw):
         """
@@ -256,8 +252,7 @@ class ListaHotelesController(http.Controller):
                 'error': 'Error interno del servidor'
             }, status=500)
 
-    @http.route('/api/hotel/debug/data', auth='public', type='http', methods=['GET', 'OPTIONS'], csrf=False)
-    @cors_enabled
+    @http.route('/api/hotel/debug/data', auth='public', type='http', methods=['GET'], csrf=False)
     @validate_api_key
     def debug_data(self, **kw):
         """
@@ -315,8 +310,7 @@ class ListaHotelesController(http.Controller):
                 'error': 'Error interno del servidor'
             }, status=500)
 
-    @http.route('/api/hotel/hoteles/<int:hotel_id>/cuartos', auth='public', type='http', methods=['GET', 'OPTIONS'], csrf=False)
-    @cors_enabled
+    @http.route('/api/hotel/hoteles/<int:hotel_id>/cuartos', auth='public', type='http', methods=['GET'], csrf=False)
     @validate_api_key
     def get_cuartos_by_hotel(self, hotel_id, **kw):
         """
@@ -376,8 +370,7 @@ class ListaHotelesController(http.Controller):
                 'error': 'Error interno del servidor'
             }, status=500)
 
-    @http.route('/api/hotel/cuartos', auth='public', type='http', methods=['GET', 'OPTIONS'], csrf=False)
-    @cors_enabled
+    @http.route('/api/hotel/cuartos', auth='public', type='http', methods=['GET'], csrf=False)
     @validate_api_key
     def get_cuartos(self, **kw):
         """
@@ -422,8 +415,7 @@ class ListaHotelesController(http.Controller):
                 'error': 'Error interno del servidor'
             }, status=500)
 
-    @http.route('/api/hotel/cuartos/<int:cuarto_id>', auth='public', type='http', methods=['GET', 'OPTIONS'], csrf=False)
-    @cors_enabled
+    @http.route('/api/hotel/cuartos/<int:cuarto_id>', auth='public', type='http', methods=['GET'], csrf=False)
     @validate_api_key
     def get_cuarto_by_id(self, cuarto_id, **kw):
         """
