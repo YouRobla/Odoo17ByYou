@@ -36,6 +36,7 @@ services:
       - HOST=${ODOO_HOST:-db}
       - USER=${ODOO_USER:-odoo}
       - PASSWORD=${ODOO_PASSWORD:-odoo}
+    command: ["odoo", "--config=/etc/odoo/odoo.conf", "--update=all"]
     networks:
       - odoo-network
 
