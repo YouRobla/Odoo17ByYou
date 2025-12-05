@@ -21,7 +21,7 @@ services:
 
   odoo:
     image: odoo:17.0
-    container_name: odoo
+    container_name: odoo_test
     restart: unless-stopped
     depends_on:
       db:
